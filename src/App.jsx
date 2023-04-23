@@ -144,9 +144,12 @@ function App() {
   useEffect(() => {
     const fetchAPI = async () => {
       setIsLoading(true);
-      const lat = 10.762622;
-      const lon = 106.660172; // hcm city
-      const key = "your key here";
+      const hcm = {
+        lat: 10.762622, 
+        lon: 106.660172
+      }
+      const {lat, lon} = hcm
+      const key = "61e8ca0a845814b2d77417a7e3587214";
       const units = "metric";
       const res = await fetch(
         `https://pro.openweathermap.org/data/2.5/forecast/hourly?lat=${lat}&lon=${lon}&units=${units}&appid=${key}`
@@ -155,10 +158,7 @@ function App() {
       setUpdateTime(new Date().toString());
       const rawData = await res.json();
       console.log(rawData);
-      setAllData(rawData.list.slice(0, 24));
-      console.log(
-        rawData.list.map((item) => (item.main.rain ? item.rain["1h"] : 0))
-      );
+      setAllData(rawData.list.slice(0, 25));
       setTemperatureData(rawData.list.map((item) => item.main.temp));
       setRainData(
         rawData.list.map((item) => (item.rain ? item.rain["1h"] : 0))
@@ -191,7 +191,7 @@ function App() {
   };
 
   const displayData = {
-    labels: allData?.map((item) => item.dt_txt.slice(10, 16)),
+    labels: allData?.map((item) => ((new Date((item.dt_txt + " UTC"))).toString()).slice(15, 21)),
     datasets: [
       {
         label: "Nhiệt độ (°C)",
@@ -223,37 +223,37 @@ function App() {
       summary:
         "Nhiệt độ ở Thành phố Hồ Chi Minh đang rất cao khiến cho nhiều người già và trẻ em nhập viện. Nhớ cung cấp nước cho cơ thể bạn nhé!",
       others: ["Hãy tránh nắng", "Không ra đường", "Hạ thân nhiệt"],
-      image: "../src/assets/Map.png",
+      image: "../src/assets/news1.webp",
     },
     {
       title:
         "Nhiều người già và trẻ em ở Thành phố Hồ Chí Minh nhập viện vì nắng nóng",
       summary:
         "Do thời tiết dần chuyển sang mùa hạ mang theo không khí nóng đến đột ngột khiến cho nhiều người không kịp thích nghi đặc biệt là người già và trẻ em. Hiện nay bệnh viện vẫn đang tiếp nhận nhiều bệnh nhân tới vì sốc nhiệt.",
-      image: "../src/assets/Map.png",
+      image: "../src/assets/news2.jpg",
     },
     {
       title: "Dự kiến nắng nóng kéo dài ở Thành phố Hồ Chí Minh",
       summary:
         "Theo dự báo nhiệt độ ở Thành phố Hồ Chính Minh sẽ dao động từ 26°C đến 38°C từ tháng 4 đến tháng 8 năm 2023.  Mọi người nên cố gắng giữ gìn sức khỏe và sử dụng các biện pháp chống nắng, tránh ra ngoài vào buổi trưa nếu không cần thiết.",
-      image: "../src/assets/Map.png",
+      image: "../src/assets/news3.jpg",
     },
   ];
 
   const otherNews = [
     {
       title: "Dự thảo luật Đất đai liệt kê các trường hợp được thu hồi đất",
-      image: "../src/assets/Map.png",
+      image: "../src/assets/other-news1.jpg",
       link: "https://vnexpress.net/du-thao-luat-dat-dai-liet-ke-cac-truong-hop-duoc-thu-hoi-dat-4590373.html",
     },
     {
-      title: "Dự thảo luật Đất đai liệt kê các trường hợp được thu hồi đất",
-      image: "../src/assets/Map.png",
+      title: "Lao động mất việc tăng",
+      image: "../src/assets/other-news2.jpg",
       link: "https://vnexpress.net/lao-dong-mat-viec-tang-4590392.html",
     },
     {
       title: "Tượng cánh tay trên bờ biển Hải Tiến gây tranh cãi",
-      image: "../src/assets/Map.png",
+      image: "../src/assets/other-news3.jpg",
       link: "https://vnexpress.net/tuong-canh-tay-tren-bo-bien-hai-tien-gay-tranh-cai-4589908.html",
     },
   ];
@@ -270,13 +270,14 @@ function App() {
     {
       title: "BK Weather",
       texts: [
-        "Item 1",
-        "Item 2",
-        "Item 3",
-        "Item 4",
-        "Item 5",
-        "Item 6",
-        "Item 7",
+        "Nguyễn Minh Hưng - 2013392",
+        "Lê Duy Khang - 2013425",
+        "Trịnh Đức Mạnh - 1914126",
+        "Trần Minh Nghĩa - 2013878",
+        "Nguyễn Trọng Phú - 2011833",
+        "Nguyễn Đức Triết - 2012537",
+        "Nguyễn Thanh Tùng - 2014999",
+        "Bùi Trần Nhật Thanh - 2012021"
       ],
     },
   ];
@@ -341,7 +342,7 @@ function App() {
               <ul className="container flex flex-col w-4/5 self-center justify-start">
                 {item.others
                   ? item.others.map((otherItem) => (
-                      <div className="container flex flex-row items-center justify-start w-2/5">
+                      <div className="container flex flex-row items-center justify-start w-2/5" key={otherItem}>
                         <FontAwesomeIcon icon={faCheck} color="green" />
                         <li key={otherItem} className="text-white ml-2">
                           {otherItem}
@@ -388,15 +389,15 @@ function App() {
           </button>
         </div>
       </div>
-      <div className="container mt-10 flex flex-row p-5 h-[20rem] justify-between">
+      <div className="container mt-10 flex flex-row p-5 h-[22rem] justify-between">
         <div className="container w-[15%] flex flex-col justify-end">
           <img src="../src/assets/Logo.png" className="w-[90%]" />
         </div>
-        <div className="container w-3/5 h-full flex flex-col items-end px-10">
+        <div className="container w-3/5 h-full flex flex-col items-end">
           <div className="container w-full h-[90%] flex flex-row justify-between items-center">
             
-              {footerTexts.map((item) => (
-                <div className="container w-[30%] flex flex-col justify-start gap-y-2 h-full" key={item.title}>
+              {footerTexts.map((item, index) => (
+                <div className="container w-[30%] flex flex-col justify-start gap-y-2 h-full" key={item.title + index}>
                   <h6 className="font-bold text-white text-sm">{item.title}</h6>
                   {item.texts.map((text, index) => (
                     <p
@@ -410,9 +411,9 @@ function App() {
               ))}
             
           </div>
-          <div className="container flex flex-row justify-end items-center h-[15%] gap-x-5 w-4/5 self-center">
+          <div className="container flex flex-row justify-end items-center h-[10%] gap-x-5 w-4/5 self-center">
             {footerIcons.map((icon) => (
-              <img src={icon} className="h-full opacity-60" />
+              <img src={icon} className="h-full opacity-60" key={icon} />
             ))}
           </div>
         </div>
